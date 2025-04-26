@@ -1,6 +1,33 @@
 // Список администраторов
 const admins = ['THE_RuTrA', 'Sir_pip'];
 
+// Стартовые новости
+const defaultPosts = [
+  {
+    title: "Новости 1",
+    content: "Это первая новость на сайте. Содержимое новости.",
+    image: "https://via.placeholder.com/600x300", // Пример изображения
+    date: "2025-04-26 12:00"
+  },
+  {
+    title: "Новости 2",
+    content: "Это вторая новость. Текст второй новости.",
+    image: "https://via.placeholder.com/600x300", // Пример изображения
+    date: "2025-04-25 15:00"
+  },
+  {
+    title: "Новости 3",
+    content: "Третья новость с интересным контентом.",
+    image: "https://via.placeholder.com/600x300", // Пример изображения
+    date: "2025-04-24 10:30"
+  }
+];
+
+// Загружаем начальные новости в localStorage, если их нет
+if (!localStorage.getItem('posts')) {
+  localStorage.setItem('posts', JSON.stringify(defaultPosts));
+}
+
 // Проверка, является ли пользователь администратором
 function isAdmin(username) {
   return admins.includes(username);
@@ -160,8 +187,8 @@ function savePost(title, content, image) {
     date: new Date().toLocaleString()
   };
 
-  posts.push(newPost);
-  localStorage.setItem('posts', JSON.stringify(posts));
+  posts.push(newPost); // Добавляем новый пост в массив
+  localStorage.setItem('posts', JSON.stringify(posts)); // Сохраняем обратно в localStorage
 
   document.getElementById('post-title').value = '';
   document.getElementById('post-content').value = '';
@@ -176,7 +203,7 @@ function renderPosts() {
   const newsList = document.getElementById('news-list');
   if (!newsList) return;
 
-  newsList.innerHTML = '';
+  newsList.innerHTML = ''; // Очищаем перед рендером
 
   const posts = JSON.parse(localStorage.getItem('posts')) || [];
   const loggedInUserRole = localStorage.getItem('loggedInUserRole');
@@ -195,6 +222,7 @@ function renderPosts() {
     newsList.appendChild(postElement);
   });
 
+  // Добавление обработчиков для кнопок удаления
   if (loggedInUserRole === 'admin') {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(button => {
@@ -211,8 +239,8 @@ function deletePost(index) {
   const posts = JSON.parse(localStorage.getItem('posts')) || [];
 
   if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-    posts.splice(index, 1);
-    localStorage.setItem('posts', JSON.stringify(posts));
-    renderPosts();
+    posts.splice(index, 1); // Удаляем новость по индексу
+    localStorage.setItem('posts', JSON.stringify(posts)); // Сохраняем изменения в localStorage
+    renderPosts(); // Перерисовываем список новостей
   }
 }
