@@ -10,14 +10,15 @@ function isAdmin(username) {
 window.onload = function() {
   const loggedInUser = localStorage.getItem('loggedInUser');
   const loggedInUserRole = localStorage.getItem('loggedInUserRole');
+  const path = window.location.pathname.split('/').pop(); // Получаем только имя файла
 
   // Если пользователь не авторизован — редирект на login
-  if (!loggedInUser && window.location.pathname !== '/login.html' && window.location.pathname !== '/register.html') {
+  if (!loggedInUser && path !== 'login.html' && path !== 'register.html') {
     window.location.href = 'login.html';
   }
 
   // Если пользователь уже авторизован — не пускать на логин/регистрацию
-  if (loggedInUser && (window.location.pathname === '/login.html' || window.location.pathname === '/register.html')) {
+  if (loggedInUser && (path === 'login.html' || path === 'register.html')) {
     window.location.href = 'index.html';
   }
 
@@ -175,7 +176,7 @@ function savePost(title, content, image) {
   renderPosts();
 }
 
-// Обновленная функция рендера постов
+// Отрисовка постов
 function renderPosts() {
   const newsList = document.getElementById('news-list');
   if (!newsList) return;
