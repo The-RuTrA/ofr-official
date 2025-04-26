@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ОФР - Новости</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <!-- Обертка для логотипа и текста -->
+      <div class="logo-container">
+        <img src="logo.png" alt="Логотип" class="logo-image" />
+        <h1 class="logo">ОФР</h1>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="login.html" id="logout-btn">Выйти</a></li> <!-- Кнопка выхода -->
+          <button id="delete-account-btn">Удалить аккаунт</button>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Панель администратора -->
+  <div id="admin-panel" style="display: none;">
+    <h2>Панель администратора</h2>
+
+    <!-- Форма для создания поста -->
+    <form id="create-post-form" style="display: none;">
+      <label for="post-title">Заголовок</label>
+      <input type="text" id="post-title" required />
+
+      <label for="post-content">Содержимое</label>
+      <textarea id="post-content" required></textarea>
+
+      <label for="post-image">Изображение</label>
+      <input type="file" id="post-image" accept="image/*" />
+
+      <button type="submit">Создать пост</button>
+    </form>
+  </div>
+  
+  <main class="news">
+    <div class="container">
+      <h2 class="section-title">Последние новости</h2>
+      <div class="news-list" id="news-list">
+        <!-- Новости будут вставляться через JS -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2025 ОФР. Все права защищены.</p>
+      <p><a href="">Вики MineValt</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0d0d0d; /* Очень тёмный фон */
+  color: #ffffff;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  background-color: #713e7e; /* Светлый тёмно-фиолетово-серый */
+  padding: 20px 0;
+}
+
+.logo {
+  font-size: 2em;
+  margin: 0;
+  color: #ffffff;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.nav-links a {
+  color: #d1c8ef; /* Светлый серо-фиолетовый для ссылок */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.section-title {
+  font-size: 2em;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #d1c8ef; /* Цвет заголовков */
+}
+
+/* Стили для контейнера новостей */
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px; /* Отступы внутри фрейма */
+  max-height: none; /* Убираем ограничение по высоте */
+  height: auto; /* Фрейм будет растягиваться по вертикали в зависимости от контента */
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  border: 1px solid #72648a;
+}
+
+/* Стили для каждого элемента новости */
+.news-item {
+  background-color: #1a1a1a; /* Тёмная карточка */
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #72648a; /* Светлый фиолетово-серый бордер */
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.news-item:hover {
+  transform: translateY(-5px);
+  background-color: #262626;
+}
+
+.footer {
+  background-color: #713e7e;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px;
+  font-size: 0.9em;
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  background-color: #1a1a1a;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(114, 100, 138, 0.5); /* мягкая тень фиолетово-серая */
+}
+
+.login-title {
+  text-align: center;
+  color: #d1c8ef;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form input {
+  padding: 12px;
+  border: 1px solid #72648a;
+  background-color: #262626;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #d1c8ef;
+}
+
+.login-form button {
+  padding: 12px;
+  background-color: #72648a;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-form button:hover {
+  background-color: #8e7abf;
+}
+
+.form-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.form-link a {
+  color: #b5abcf;
+  text-decoration: none;
+}
+
+.form-link a:hover {
+  text-decoration: underline;
+}
+
+/* Стили для панели администратора */
+#admin-panel {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(114, 100, 138, 0.5);
+  margin-top: 40px;
+  width: 400px;  /* Устанавливаем ширину панели */
+  position: fixed;  /* Закрепляем панель в правой части */
+  top: 100px;  /* Отступ сверху */
+  right: 20px;  /* Отступ от правой границы */
+  z-index: 10;  /* Порядок слоев, чтобы панель не перекрывала другие элементы */
+}
+
+/* Добавляем отступ для основного контента */
+main {
+  padding-right: 420px;  /* Добавляем отступ справа, чтобы контент не перекрывался панелью */
+}
+
+/* Заголовок панели администратора */
+#admin-panel h2 {
+  color: #d1c8ef;
+  font-size: 1.8em;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Стили для формы создания поста */
+#create-post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#create-post-form label {
+  font-size: 1.2em;
+  color: #d1c8ef;
+}
+
+#create-post-form input,
+#create-post-form textarea {
+  padding: 12px;
+  background-color: #262626;
+  color: #ffffff;
+  border: 1px solid #72648a;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+#create-post-form input:focus,
+#create-post-form textarea:focus {
+  outline: none;
+  border-color: #d1c8ef;
+}
+
+#create-post-form textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+#create-post-form button {
+  padding: 12px;
+  background-color: #72648a;
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#create-post-form button:hover {
+  background-color: #8e7abf;
+}
+
+/* Центрирование текста и формы */
+#admin-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Добавим небольшой промежуток между логотипом и текстом */
+}
+
+.logo-image {
+  max-width: 40px; /* Размер логотипа */
+  height: auto;
+}
+
+.logo {
+  margin: 0;
+  font-size: 2em;
+  color: #ffffff;
+}
