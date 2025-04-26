@@ -1,5 +1,5 @@
 // Список администраторов
-const admins = ['THE_RuTrA', 'Sir_pip'];  // Добавляем администраторов по логину
+const admins = ['THE_RuTrA', 'Sir_pip'];
 
 // Проверка, является ли пользователь администратором
 function isAdmin(username) {
@@ -12,26 +12,23 @@ window.onload = function() {
   const loggedInUserRole = localStorage.getItem('loggedInUserRole');
   const path = window.location.pathname.split('/').pop(); // Получаем только имя файла
 
-  // Если пользователь не авторизован — редирект на login
   if (!loggedInUser && path !== 'login.html' && path !== 'register.html') {
     window.location.href = 'login.html';
+    return;
   }
 
-  // Если пользователь уже авторизован — не пускать на логин/регистрацию
   if (loggedInUser && (path === 'login.html' || path === 'register.html')) {
     window.location.href = 'index.html';
+    return;
   }
 
-  // Если админ — показать панель администратора
   if (loggedInUserRole === 'admin') {
     const adminPanel = document.getElementById('admin-panel');
     if (adminPanel) adminPanel.style.display = 'block';
-
     const postCreationForm = document.getElementById('create-post-form');
     if (postCreationForm) postCreationForm.style.display = 'block';
   }
 
-  // Отобразить посты (после загрузки страницы)
   renderPosts();
 };
 
@@ -59,7 +56,7 @@ if (registerForm) {
     localStorage.setItem(username, JSON.stringify(user));
 
     localStorage.setItem('loggedInUser', username);
-    localStorage.setItem('loggedInUserRole', 'user');
+    localStorage.setItem('loggedInUserRole', isAdmin(username) ? 'admin' : 'user');
 
     alert('Регистрация успешна!');
     window.location.href = 'index.html';
@@ -124,7 +121,7 @@ if (deleteAccountBtn) {
   });
 }
 
-// Создание поста с изображением
+// Создание поста
 const createPostForm = document.getElementById('create-post-form');
 if (createPostForm) {
   createPostForm.addEventListener('submit', function(event) {
@@ -140,11 +137,10 @@ if (createPostForm) {
       return;
     }
 
-    // Читаем картинку как DataURL (чтобы сохранить в localStorage)
     if (imageFile) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        savePost(title, content, e.target.result); // e.target.result — это base64 картинка
+        savePost(title, content, e.target.result);
       };
       reader.readAsDataURL(imageFile);
     } else {
@@ -160,14 +156,13 @@ function savePost(title, content, image) {
   const newPost = {
     title,
     content,
-    image, // сохраняем base64 изображения или null
+    image,
     date: new Date().toLocaleString()
   };
 
   posts.push(newPost);
   localStorage.setItem('posts', JSON.stringify(posts));
 
-  // Очищаем форму
   document.getElementById('post-title').value = '';
   document.getElementById('post-content').value = '';
   document.getElementById('post-image').value = '';
@@ -176,17 +171,16 @@ function savePost(title, content, image) {
   renderPosts();
 }
 
-// Отрисовка постов
+// Отображение постов
 function renderPosts() {
   const newsList = document.getElementById('news-list');
   if (!newsList) return;
 
-  newsList.innerHTML = ''; // Очистка списка перед рендером
+  newsList.innerHTML = '';
 
   const posts = JSON.parse(localStorage.getItem('posts')) || [];
   const loggedInUserRole = localStorage.getItem('loggedInUserRole');
 
-  // Перевернем массив, чтобы новые посты шли первыми
   posts.reverse().forEach((post, index) => {
     const postElement = document.createElement('div');
     postElement.classList.add('news-item');
@@ -219,6 +213,6 @@ function deletePost(index) {
   if (confirm('Вы уверены, что хотите удалить эту новость?')) {
     posts.splice(index, 1);
     localStorage.setItem('posts', JSON.stringify(posts));
-    renderPosts(); // Перерисовать посты
+    renderPosts();
   }
 }
