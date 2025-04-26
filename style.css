@@ -255,3 +255,50 @@ main {
   font-size: 2em;
   color: #ffffff;
 }
+
+/* Обычное поведение для десктопа */
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Позволит переносить элементы на новую строку */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-image {
+  max-width: 40px;
+  height: auto;
+}
+
+.logo {
+  margin: 0;
+  font-size: 2em;
+  color: #ffffff;
+}
+
+/* Адаптив для телефонов */
+@media (max-width: 600px) {
+  .logo-container {
+    flex-direction: column; /* Ставим логотип и текст друг под другом */
+    align-items: center; /* Центруем по горизонтали */
+    gap: 5px;
+  }
+
+  .logo-image {
+    max-width: 60px; /* Можно сделать логотип чуть больше на телефоне */
+  }
+
+  .logo {
+    font-size: 1.5em; /* Немного меньше размер текста на телефонах */
+  }
+
+  .header .container {
+    justify-content: center; /* Центрируем весь контент */
+    gap: 20px;
+  }
+}
