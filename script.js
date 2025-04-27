@@ -1,16 +1,14 @@
 // Список администраторов
 const admins = ['THE_RuTrA', 'Sir_pip'];
 
-// Проверка, является ли пользователь администратором
 function isAdmin(username) {
   return admins.includes(username);
 }
 
-// Проверка авторизации при загрузке страницы
 window.onload = function() {
   const loggedInUser = localStorage.getItem('loggedInUser');
   const loggedInUserRole = localStorage.getItem('loggedInUserRole');
-  const path = window.location.pathname.split('/').pop(); // Получаем только имя файла
+  const path = window.location.pathname.split('/').pop();
 
   if (!loggedInUser && path !== 'login.html' && path !== 'register.html') {
     window.location.href = 'login.html';
@@ -35,7 +33,7 @@ window.onload = function() {
 // Регистрация
 const registerForm = document.getElementById('register-form');
 if (registerForm) {
-  registerForm.addEventListener('submit', function(event) {
+  registerForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const username = document.getElementById('reg-username').value;
@@ -47,14 +45,13 @@ if (registerForm) {
       return;
     }
 
-    if (localStorage.getItem(username)) {
+    const userDoc = await db.collection('users').doc(username).get();
+    if (userDoc.exists) {
       alert('Пользователь уже существует!');
       return;
     }
 
-    const user = { username, password };
-    localStorage.setItem(username, JSON.stringify(user));
-
+    await db.collection('users').doc(username).set({ username, password });
     localStorage.setItem('loggedInUser', username);
     localStorage.setItem('loggedInUserRole', isAdmin(username) ? 'admin' : 'user');
 
@@ -66,27 +63,25 @@ if (registerForm) {
 // Вход
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
-  loginForm.addEventListener('submit', function(event) {
+  loginForm.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    const storedUser = localStorage.getItem(username);
-    if (!storedUser) {
+    const userDoc = await db.collection('users').doc(username).get();
+    if (!userDoc.exists) {
       alert('Пользователь не найден!');
       return;
     }
 
-    const user = JSON.parse(storedUser);
-
+    const user = userDoc.data();
     if (user.password !== password) {
       alert('Неверный пароль!');
       return;
     }
 
     const isAdminUser = isAdmin(username);
-
     localStorage.setItem('loggedInUser', username);
     localStorage.setItem('loggedInUserRole', isAdminUser ? 'admin' : 'user');
 
@@ -108,11 +103,11 @@ if (logoutBtn) {
 // Удаление аккаунта
 const deleteAccountBtn = document.getElementById('delete-account-btn');
 if (deleteAccountBtn) {
-  deleteAccountBtn.addEventListener('click', function() {
+  deleteAccountBtn.addEventListener('click', async function() {
     const loggedInUser = localStorage.getItem('loggedInUser');
 
     if (confirm('Вы уверены, что хотите удалить свой аккаунт?')) {
-      localStorage.removeItem(loggedInUser);
+      await db.collection('users').doc(loggedInUser).delete();
       localStorage.removeItem('loggedInUser');
       localStorage.removeItem('loggedInUserRole');
       alert('Аккаунт удален!');
@@ -151,24 +146,20 @@ if (createPostForm) {
 
 // Сохраняем пост
 function savePost(title, content, image) {
-  const posts = JSON.parse(localStorage.getItem('posts')) || [];
-
-  const newPost = {
-    title,
-    content,
-    image,
+  db.collection('posts').add({
+    title: title,
+    content: content,
+    image: image,
     date: new Date().toLocaleString()
-  };
-
-  posts.push(newPost);
-  localStorage.setItem('posts', JSON.stringify(posts));
-
-  document.getElementById('post-title').value = '';
-  document.getElementById('post-content').value = '';
-  document.getElementById('post-image').value = '';
-
-  alert('Пост добавлен!');
-  renderPosts();
+  }).then(() => {
+    alert('Пост добавлен!');
+    renderPosts();
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-content').value = '';
+    document.getElementById('post-image').value = '';
+  }).catch((error) => {
+    console.error('Ошибка сохранения поста: ', error);
+  });
 }
 
 // Отображение постов
@@ -178,41 +169,43 @@ function renderPosts() {
 
   newsList.innerHTML = '';
 
-  const posts = JSON.parse(localStorage.getItem('posts')) || [];
-  const loggedInUserRole = localStorage.getItem('loggedInUserRole');
-
-  posts.reverse().forEach((post, index) => {
-    const postElement = document.createElement('div');
-    postElement.classList.add('news-item');
-    postElement.innerHTML = `
-      <h3>${post.title}</h3>
-      ${post.image ? `<img src="${post.image}" alt="Изображение" style="max-width: 100%; height: auto;">` : ''}
-      <p>${post.content}</p>
-      <small>Дата публикации: ${post.date}</small>
-      ${loggedInUserRole === 'admin' ? `<button class="delete-btn" data-index="${index}">Удалить</button>` : ''}
-    `;
-
-    newsList.appendChild(postElement);
-  });
-
-  if (loggedInUserRole === 'admin') {
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    deleteButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const index = this.getAttribute('data-index');
-        deletePost(index);
+  db.collection('posts').orderBy('date', 'desc').get()
+    .then(snapshot => {
+      const loggedInUserRole = localStorage.getItem('loggedInUserRole');
+      snapshot.forEach(doc => {
+        const post = doc.data();
+        const postElement = document.createElement('div');
+        postElement.classList.add('news-item');
+        postElement.innerHTML = `
+          <h3>${post.title}</h3>
+          ${post.image ? `<img src="${post.image}" alt="Изображение" style="max-width: 100%; height: auto;">` : ''}
+          <p>${post.content}</p>
+          <small>Дата публикации: ${post.date}</small>
+          ${loggedInUserRole === 'admin' ? `<button class="delete-btn" data-id="${doc.id}">Удалить</button>` : ''}
+        `;
+        newsList.appendChild(postElement);
       });
+
+      if (loggedInUserRole === 'admin') {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            deletePost(id);
+          });
+        });
+      }
     });
-  }
 }
 
 // Удаление поста
-function deletePost(index) {
-  const posts = JSON.parse(localStorage.getItem('posts')) || [];
-
+function deletePost(id) {
   if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-    posts.splice(index, 1);
-    localStorage.setItem('posts', JSON.stringify(posts));
-    renderPosts();
+    db.collection('posts').doc(id).delete()
+      .then(() => {
+        renderPosts();
+      }).catch(error => {
+        console.error('Ошибка удаления поста: ', error);
+      });
   }
 }
